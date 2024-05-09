@@ -1,4 +1,4 @@
-# rba_stuff
+# RBA stuff
 Splunk RBA snippets showcasing Splunk RBA views.
  - Heatmap
  - Dendrogram
