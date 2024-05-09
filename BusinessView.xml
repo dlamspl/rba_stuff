@@ -156,7 +156,7 @@
         <search>
           <query>|inputlookup mitre_attack_lookup
 | stats dc(mitre_technique_id) as total_techniques by mitre_tactic
-|append [| rest splunk_server=local count=0 /services/saved/searches|search action.correlationsearch.label="RR - *"|table action.correlationsearch.annotations|spath input=action.correlationsearch.annotations|rename mitre_attack{} as  mitre_technique_id|mvexpand mitre_technique_id|lookup mitre_attack_lookup mitre_technique_id OUTPUT mitre_tactic|stats dc(mitre_technique_id) as num_covered_techniques by mitre_tactic]|stats values(total_techniques) as total_techniques, values(num_covered_techniques) as num_covered_techniques by mitre_tactic
+|append [| rest splunk_server=local count=0 /services/saved/searches|search action.risk="1" action.correlationsearch.annotations!="" |table action.correlationsearch.annotations|spath input=action.correlationsearch.annotations|rename mitre_attack{} as  mitre_technique_id|mvexpand mitre_technique_id|lookup mitre_attack_lookup mitre_technique_id OUTPUT mitre_tactic|stats dc(mitre_technique_id) as num_covered_techniques by mitre_tactic]|stats values(total_techniques) as total_techniques, values(num_covered_techniques) as num_covered_techniques by mitre_tactic
 | fillnull value="0" num_covered_techniques
 | eval combo = num_covered_techniques." of ".total_techniques
 |eval perc=round((num_covered_techniques/total_techniques)*100,1)
