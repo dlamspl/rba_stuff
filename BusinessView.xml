@@ -9,58 +9,9 @@
     <earliest>$field1.earliest$</earliest>
     <latest>$field1.latest$</latest>
   </search>
-  <search id="populate_mitre_risk_attribution_counts">
-    <query>
-      index=risk annotations.mitre_attack.mitre_technique_id=*
-| table search_name risk_object risk_object_type annotations.mitre_attack.mitre_tactic annotations.mitre_attack.mitre_technique annotations.mitre_attack.mitre_technique_id
-| lookup mitre_matrix_list.csv TechniqueIdCombined AS annotations.mitre_attack.mitre_technique_id OUTPUT Technique, Sub_Technique, Tactic
-| table Tactic Technique Sub_Technique
-| stats count as technique_count by Tactic Technique Sub_Technique
-| eval IsSubTechnique=if(Sub_Technique!="-","Yes","No")
-| lookup mitre_matrix_list Tactic Technique OUTPUT Sub_Technique AS Sub_Technique_List
-| eval Sub_Technique_List=mvfilter(Sub_Technique_List!="-")
-| eval sub_technique_count=case(Sub_Technique!="-",technique_count)
-| outputlookup attack_environment_counts.csv
-    </query>
-    <earliest>$field1.earliest$</earliest>
-    <latest>$field1.latest$</latest>
-    <done>
-      <unset token="reset_token"></unset>
-      <set token="reset_token">reset_token_value</set>
-    </done>
-  </search>
-  <search id="populate_mitre_matrix_counts_from_rr_rules">
-    <query>
-      | inputlookup ootb_searches_and_technique_ids.csv
-| lookup mitre_matrix_list.csv TechniqueIdCombined AS mitre_technique OUTPUT Technique, Sub_Technique, Tactic
-| table Tactic Technique Sub_Technique
-| stats count as technique_count by Tactic Technique Sub_Technique
-| eval IsSubTechnique=if(Sub_Technique!="-","Yes","No")
-| lookup mitre_matrix_list Tactic Technique OUTPUT Sub_Technique AS Sub_Technique_List
-| eval Sub_Technique_List=mvfilter(Sub_Technique_List!="-")
-| eval sub_technique_count=case(Sub_Technique!="-",technique_count)
-| outputlookup rr_rule_environment_counts.csv
-    </query>
-    <earliest>$field1.earliest$</earliest>
-    <latest>$field1.latest$</latest>
-  </search>
-  <search id="populate_risk_object_attack_env_counts_lookup">
-    <query>
-      | tstats `summariesonly` count from datamodel=Risk by All_Risk.annotations.mitre_attack.mitre_tactic, All_Risk.annotations.mitre_attack.mitre_technique, All_Risk.annotations.mitre_attack.mitre_technique_id, All_Risk.risk_object
-| rename All_Risk.* as *
-| lookup mitre_matrix_list TechniqueIdCombined as annotations.mitre_attack.mitre_technique_id OUTPUT Tactic, Technique Sub_Technique TechniqueIdCombined
-| stats count as risk_object_count by Tactic Technique Sub_Technique risk_object TechniqueIdCombined
-| eval risk_object=risk_object."::".risk_object_count
-| mvcombine delim="," risk_object
-| nomv risk_object
-| eval IsSubTechnique=if(Sub_Technique!="-","Yes","No")
-| eval sub_technique_count=risk_object_count
-| table TechniqueIdCombined IsSubTechnique sub_technique_count Tactic Technique Sub_Technique risk_object risk_object_count
-| outputlookup risk_object_attack_environment_counts.csv
-    </query>
-    <earliest>$field1.earliest$</earliest>
-    <latest>$field1.latest$</latest>
-  </search>
+
+
+
   <fieldset submitButton="false">
     <input type="time" token="field1">
       <label></label>
