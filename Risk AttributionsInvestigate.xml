@@ -155,6 +155,39 @@
         <option name="wrap">true</option>
       </table>
     </panel>
+    <panel>
+      <title>Signals</title>
+      <table>
+        <search>
+          <query>`notable` 
+ |search notable_type="notable" OR notable_type="risk_event"
+ |append [search index=risk |rename annotations.mitre_attack.mitre_tactic as security_domain risk_object as user search_name as source |eval notable_type="risk_event"]
+ |eval user=if(user!="", user, "unknown")
+|eval src=if(src!="", src, "unknown")
+|eval dest=if(dest!="", dest, "unknown")
+| eval user=if(risk_object!="", risk_object, user) 
+
+|eval Action=if(notable_type="risk_event","Risk","Alert")
+
+|search user!="unknown"
+|sort  _time
+|search risk_object="$field_risk_object$" OR user="$field_risk_object$" OR dest="$field_risk_object$" OR src="$field_risk_object$"
+|stats sparkline count as events dc(source) as sources by source Action|rename sparkline as signals
+|table source Action signals</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
   </row>
   <row>
     <panel>
@@ -580,7 +613,7 @@
         <option name="totalsRow">false</option>
         <option name="wrap">true</option>
         <drilldown>
-          <link target="_blank">/app/rba_journey/risk_attributions?form.field_risk_object=$row.risk_object$&amp;form.field_risk_object_type=$row.risk_object_type$</link>
+          <link target="_blank">/app/SplunkEnterpriseSecuritySuite/risk_investigation?form.field_risk_object=$click.value2$</link>
         </drilldown>
       </table>
     </panel>
