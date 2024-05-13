@@ -387,6 +387,34 @@
                 "fillColor": "#53a051",
                 "fillOpacity": 0.1
             }
+        },
+        "viz_RZnuAM8A": {
+            "type": "splunk.rectangle",
+            "options": {
+                "fillColor": "#53a051"
+            }
+        },
+        "viz_6rkquNQl": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "**Investigate** "
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.linkToDashboard",
+                    "options": {
+                        "app": "SplunkEnterpriseSecuritySuite",
+                        "dashboard": "risk_investigation",
+                        "newTab": true,
+                        "tokens": [
+                            {
+                                "token": "field_risk_object",
+                                "value": "$risk_object$"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "dataSources": {
@@ -606,7 +634,7 @@
                 "item": "viz_0B6MFshK",
                 "type": "block",
                 "position": {
-                    "x": 720,
+                    "x": 710,
                     "y": 20,
                     "w": 80,
                     "h": 40
@@ -626,7 +654,7 @@
                 "item": "viz_gHRv3T78",
                 "type": "block",
                 "position": {
-                    "x": 650,
+                    "x": 670,
                     "y": 10,
                     "w": 30,
                     "h": 50
@@ -846,10 +874,30 @@
                 "item": "viz_MPgj3hhd",
                 "type": "block",
                 "position": {
-                    "x": 130,
+                    "x": 140,
                     "y": 10,
                     "w": 660,
                     "h": 160
+                }
+            },
+            {
+                "item": "viz_RZnuAM8A",
+                "type": "block",
+                "position": {
+                    "x": 450,
+                    "y": 550,
+                    "w": 133,
+                    "h": 40
+                }
+            },
+            {
+                "item": "viz_6rkquNQl",
+                "type": "block",
+                "position": {
+                    "x": 470,
+                    "y": 560,
+                    "w": 90,
+                    "h": 30
                 }
             }
         ],
