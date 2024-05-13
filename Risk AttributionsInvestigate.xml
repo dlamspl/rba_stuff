@@ -22,8 +22,8 @@
 | streamstats sum(risk_score) as score_original values(source) as sources values(risk_message) as risk_messages by risk_object
 | dedup risk_message risk_score
 | stats sum(risk_score) as risk_score</query>
-          <earliest>0</earliest>
-          <latest></latest>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
@@ -50,8 +50,8 @@
       <single>
         <search>
           <query>`notable`|search risk_object="$field_risk_object$"|`notable_owners`|search _raw=*|rex field=_raw "search_name=.(?&lt;search_name&gt;[^\"]+)\""|stats count</query>
-          <earliest>0</earliest>
-          <latest></latest>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="colorBy">value</option>
@@ -168,8 +168,8 @@
 |search risk_object="$field_risk_object$" OR user="$field_risk_object$" OR dest="$field_risk_object$" OR src="$field_risk_object$"
 |stats sparkline count as events dc(source) as sources by source Action|rename sparkline as signals
 |table source Action signals</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="count">20</option>
@@ -426,8 +426,8 @@
         <search>
           <query>| tstats `summariesonly` count sum(All_Risk.calculated_risk_score) as "Aggregate Score" avg(All_Risk.calculated_risk_score) as "Average Score" from datamodel=Risk where All_Risk.risk_object="$field_risk_object$" source="*" by All_Risk.annotations.mitre_attack.mitre_tactic
 |table  All_Risk.annotations.mitre_attack.mitre_tactic "Aggregate Score"</query>
-          <earliest>0.000</earliest>
-          <latest></latest>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="circlepack_viz.circlepack_viz.color">schemeDark2</option>
@@ -454,8 +454,8 @@
         <search>
           <query>| tstats `summariesonly` count sum(All_Risk.calculated_risk_score) as "Aggregate Score" avg(All_Risk.calculated_risk_score) as "Average Score" from datamodel=Risk where All_Risk.risk_object="$field_risk_object$" source="*" by All_Risk.annotations.mitre_attack.mitre_technique
 |table  All_Risk.annotations.mitre_attack.mitre_technique "Aggregate Score"</query>
-          <earliest>0</earliest>
-          <latest></latest>
+          <earliest>$timepicker.earliest$</earliest>
+          <latest>$timepicker.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="circlepack_viz.circlepack_viz.color">schemeDark2</option>
